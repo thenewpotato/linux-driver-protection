@@ -4150,6 +4150,14 @@ static int load_module(struct load_info *info, const char __user *uargs,
     unsigned long cr3 = __sme_pa(mod->pgd_shadow);
     write_cr3(cr3);
 
+	int sum = 0;
+	int i = 0;
+	while (i < 100) {
+		sum += i;
+		i++;
+	}
+	printk(KERN_INFO "Sum is %d\n", sum);
+
 	return do_init_module(mod);
 
  sysfs_cleanup:
