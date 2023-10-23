@@ -4142,18 +4142,18 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	trace_module_load(mod);
 
     /* Make shadow page directory */
-    // mod->pgd_shadow = __copy_pgd();
+    mod->pgd_shadow = __copy_pgd();
 
-	// printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
+	printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
 
 	/* Testing write_cr3 */
-	void* cur_cr3 = __va(read_cr3_pa());
-	unsigned long cr3 = __sme_pa(cur_cr3);
-    write_cr3(cr3);
+	// void* cur_cr3 = __va(read_cr3_pa());
+	// unsigned long cr3 = __sme_pa(cur_cr3);
+    // write_cr3(cr3);
 
     /* Switch to new page table */
-    // unsigned long cr3 = __sme_pa(mod->pgd_shadow);
-    // write_cr3(cr3);
+    unsigned long cr3 = __sme_pa(mod->pgd_shadow);
+    write_cr3(cr3);
 
 	int sum = 0;
 	int i = 0;
@@ -4860,7 +4860,9 @@ static pud_t* __copy_pud(pud_t* src) {
 	int i = 0;
 	while (i < 512) {
 		pud_t* pud_entry = pud_copy + i;
-        if (pud_flags(*pud_entry) & _PAGE_PRESENT) {
+		if (pud_large(*pud_entry))
+			continue;
+		if (pud_flags(*pud_entry) & _PAGE_PRESENT) {
 			// PMD page pointed to by the PUD entry
             pmd_t* pmd_page = (pmd_t *) pud_page_vaddr(*pud_entry);
 
@@ -4889,6 +4891,8 @@ static pmd_t* __copy_pmd(pmd_t* src) {
 	int i = 0;
 	while (i < 512) {
 		pmd_t* pmd_entry = pmd_copy + i;
+		if (pmd_large(*pmd_entry))
+			continue;
         if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
 			// PTE page pointed to by the PMD entry
             pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
