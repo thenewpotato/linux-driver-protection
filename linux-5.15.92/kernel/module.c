@@ -4131,6 +4131,34 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	/* Done! */
 	trace_module_load(mod);
 
+	/* Allocate shadow page directory */
+    // Maybe set top 8 bits to identify page table
+    mod->pgd_shadow = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+
+    /* Copy page directory */
+    memcpy(mod->pgd_shadow, init_mm.pgd, 4096);
+
+    int i = 0;
+    while (i < 512) {
+        pgd_t *pgd = mod->pgd_shadow + i;
+        if (pgd_flags(*pgd) & _PAGE_PRESENT) {
+            pmd_t *pmd_top = (pmd_t *)pgd_page_vaddr(*pgd);
+            int j = 0;
+            while (j < 512) {
+                pmd_t *pmd = pmd_top + j;
+                if (pmd_flags(*pmd) & _PAGE_PRESENT) {
+                    printk(KERN_INFO "Present PMD page\n");
+                }
+                j++;
+            }
+        }
+        i++;
+    }
+
+    /* Switch to new page table */
+    unsigned long cr3 = __sme_pa(mod->pgd_shadow);
+    write_cr3(cr3);
+
 	return do_init_module(mod);
 
  sysfs_cleanup:
