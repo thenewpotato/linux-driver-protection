@@ -4836,17 +4836,18 @@ static pgd_t* __copy_pgd() {
     /* Copy page directory */
     memcpy(pgd_copy, __va(read_cr3_pa()), 4096);
 
-	int i = 0;
-	while (i < 512) {
-		pgd_t* pgd_entry = pgd_copy + i;
-        if (pgd_flags(*pgd_entry) & _PAGE_PRESENT) {
-            pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
-            pud_t* pud_copy = __copy_pud(pud_page);
-			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
-			set_pgd(pgd_entry, __pgd(new_entry));
-        }
-		i++;
-	}
+	/* Testing: What if we don't perform deep copy */
+	// int i = 0;
+	// while (i < 512) {
+	// 	pgd_t* pgd_entry = pgd_copy + i;
+    //     if (pgd_flags(*pgd_entry) & _PAGE_PRESENT) {
+    //         pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
+    //         pud_t* pud_copy = __copy_pud(pud_page);
+	// 		pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
+	// 		set_pgd(pgd_entry, __pgd(new_entry));
+    //     }
+	// 	i++;
+	// }
 
     return pgd_copy;
 }
