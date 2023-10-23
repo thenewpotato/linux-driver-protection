@@ -81,6 +81,12 @@
 /* If this is set, the section belongs in the init part of the module */
 #define INIT_OFFSET_MASK (1UL << (BITS_PER_LONG-1))
 
+/* Function signatures for driver protection helper methods */
+pgd_t* __copy_pgd(void);
+pud_t* __copy_pud(pud_t* src);
+pmd_t* __copy_pmd(pmd_t* src);
+pte_t* __copy_pte(pte_t* src);
+
 /*
  * Mutex protects:
  * 1) List of modules (also safely readable with preempt_disable),
@@ -4131,29 +4137,8 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	/* Done! */
 	trace_module_load(mod);
 
-	/* Allocate shadow page directory */
-    // Maybe set top 8 bits to identify page table
-    mod->pgd_shadow = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
-
-    /* Copy page directory */
-    memcpy(mod->pgd_shadow, init_mm.pgd, 4096);
-
-    int i = 0;
-    while (i < 512) {
-        pgd_t *pgd = mod->pgd_shadow + i;
-        if (pgd_flags(*pgd) & _PAGE_PRESENT) {
-            pmd_t *pmd_top = (pmd_t *)pgd_page_vaddr(*pgd);
-            int j = 0;
-            while (j < 512) {
-                pmd_t *pmd = pmd_top + j;
-                if (pmd_flags(*pmd) & _PAGE_PRESENT) {
-                    printk(KERN_INFO "Present PMD page\n");
-                }
-                j++;
-            }
-        }
-        i++;
-    }
+    /* Make shadow page directory */
+    mod->pgd_shadow = __copy_pgd();
 
     /* Switch to new page table */
     unsigned long cr3 = __sme_pa(mod->pgd_shadow);
@@ -4821,6 +4806,92 @@ void print_modules(void)
 	if (last_unloaded_module[0])
 		pr_cont(" [last unloaded: %s]", last_unloaded_module);
 	pr_cont("\n");
+}
+
+// Copy the page storing the PGD table
+pgd_t* __copy_pgd() {
+    /* Allocate shadow page directory */
+    // TODO: Maybe set top 8 bits to identify page table
+    pgd_t* pgd_copy = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+
+    /* Copy page directory */
+    memcpy(pgd_copy, init_mm.pgd, 4096);
+
+    for (int i = 0; i < 512; i++) {
+        pgd_t* pgd_entry = pgd_copy + i;
+        if (pgd_flags(*pgd_entry) & __PAGE_PRESENT) {
+            pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
+            pud_t* pud_copy = __copy_pud(pud_page);
+			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
+			set_pgd(pgd_entry, __pgd(new_entry));
+        }
+    }
+
+    return pgd_copy;
+}
+
+// Copy the page storing a PUD table
+pud_t* __copy_pud(pud_t* src) {
+	put_t* pud_copy = (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+
+	memcpy(pud_copy, src, 4096);
+
+	for (int i = 0; i < 512; i++) {
+        pud_t* pud_entry = pud_copy + i;
+        if (pud_flags(*pud_entry) & __PAGE_PRESENT) {
+			// PMD page pointed to by the PUD entry
+            pmd_t* pmd_page = (pud_t *) pud_page_vaddr(*pud_entry);
+
+			// Copy the PMD page
+            pmd_t* pmd_copy = __copy_pmd(pmd_page);
+
+			// Construct new PUD entry using shadow PMD page address and original flags
+			pudval_t new_entry = (pudval_t) pmd_copy | pud_flags(*pud_entry);
+
+			// Set PUD entry
+			set_pud(pud_entry, __pud(new_entry));
+        }
+    }
+
+    return pud_copy;
+}
+
+// Copy the page storing a PMD table
+pmd_t* __copy_pmd(pmd_t* src) {
+	// Perform a shallow copy of the page
+	pmt_t* pmd_copy = (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+	memcpy(pmd_copy, src, 4096);
+
+	// For each entry (pointer to PTE table) in the PMD table, deep copy
+	for (int i = 0; i < 512; i++) {
+        pmd_t* pmd_entry = pmd_copy + i;
+        if (pmd_flags(*pmd_entry) & __PAGE_PRESENT) {
+			// PTE page pointed to by the PMD entry
+            pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
+
+			// Copy the PTE page
+            pte_t* pte_copy = __copy_pte(pte_page);
+
+			// Construct new PMD entry using shadow PTE page address and original flags
+			pmdval_t new_entry = (pmdval_t) pte_copy | pmd_flags(*pmd_entry);
+
+			// Set PMD entry
+			set_pmd(pmd_entry, __pmd(new_entry));
+        }
+    }
+
+    return pmd_copy;
+}
+
+// Copy the page storing a PTE table
+pte_t* __copy_pte(pte_t* src) {
+	// Perform a shallow copy of the page
+	pte_t* pte_copy = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+	memcpy(pte_copy, src, 4096);
+
+	// No need to perform deep copy; PTE entries point to real pages, not page table structures
+
+    return pte_copy;
 }
 
 #ifdef CONFIG_MODVERSIONS
