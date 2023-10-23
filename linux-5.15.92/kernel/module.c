@@ -4834,7 +4834,7 @@ static pgd_t* __copy_pgd() {
 
 // Copy the page storing a PUD table
 static pud_t* __copy_pud(pud_t* src) {
-	put_t* pud_copy = (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+	pud_t* pud_copy = (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 
 	memcpy(pud_copy, src, 4096);
 
