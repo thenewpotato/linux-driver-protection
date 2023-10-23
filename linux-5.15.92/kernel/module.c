@@ -4142,13 +4142,18 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	trace_module_load(mod);
 
     /* Make shadow page directory */
-    mod->pgd_shadow = __copy_pgd();
+    // mod->pgd_shadow = __copy_pgd();
 
-	printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
+	// printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
+
+	/* Testing write_cr3 */
+	void* cur_cr3 = __va(read_cr3_pa());
+	unsigned long cr3 = __sme_pa(cur_cr3);
+    write_cr3(cr3);
 
     /* Switch to new page table */
-    unsigned long cr3 = __sme_pa(mod->pgd_shadow);
-    write_cr3(cr3);
+    // unsigned long cr3 = __sme_pa(mod->pgd_shadow);
+    // write_cr3(cr3);
 
 	int sum = 0;
 	int i = 0;
