@@ -4144,7 +4144,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
     /* Make shadow page directory */
     mod->pgd_shadow = __copy_pgd();
 
-	printk(KERN_INFO "Shadow page table at %px\n", mod->pgd_shadow);
+	printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
 
     /* Switch to new page table */
     unsigned long cr3 = __sme_pa(mod->pgd_shadow);
