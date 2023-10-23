@@ -4819,7 +4819,7 @@ static pgd_t* __copy_pgd() {
     pgd_t* pgd_copy = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 
     /* Copy page directory */
-    memcpy(pgd_copy, init_mm.pgd, 4096);
+    memcpy(pgd_copy, swapper_pg_dir, 4096);
 
 	int i = 0;
 	while (i < 512) {
