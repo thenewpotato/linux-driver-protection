@@ -1,0 +1,1 @@
+cmd_/home/tiger/Development2/driver/datastore.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T scripts/module.lds -o /home/tiger/Development2/driver/datastore.ko /home/tiger/Development2/driver/datastore.o /home/tiger/Development2/driver/datastore.mod.o;  true
