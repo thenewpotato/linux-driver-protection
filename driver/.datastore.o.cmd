@@ -1,8 +1,8 @@
-cmd_/home/tiger/Development2/driver/datastore.o := gcc -Wp,-MMD,/home/tiger/Development2/driver/.datastore.o.d -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/12/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=2048 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -fomit-frame-pointer -ftrivial-auto-var-init=zero -fno-stack-clash-protection -g -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-stringop-truncation -Wno-zero-length-bounds -Wno-array-bounds -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"datastore"' -DKBUILD_MODNAME='"datastore"' -D__KBUILD_MODNAME=kmod_datastore -c -o /home/tiger/Development2/driver/datastore.o /home/tiger/Development2/driver/datastore.c
+cmd_/home/tw/Desktop/linux-driver-protection/driver/datastore.o := gcc -Wp,-MMD,/home/tw/Desktop/linux-driver-protection/driver/.datastore.o.d -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/12/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=2048 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -Wno-dangling-pointer -ftrivial-auto-var-init=zero -fno-stack-clash-protection -g -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-stringop-truncation -Wno-zero-length-bounds -Wno-array-bounds -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"datastore"' -DKBUILD_MODNAME='"datastore"' -D__KBUILD_MODNAME=kmod_datastore -c -o /home/tw/Desktop/linux-driver-protection/driver/datastore.o /home/tw/Desktop/linux-driver-protection/driver/datastore.c
 
-source_/home/tiger/Development2/driver/datastore.o := /home/tiger/Development2/driver/datastore.c
+source_/home/tw/Desktop/linux-driver-protection/driver/datastore.o := /home/tw/Desktop/linux-driver-protection/driver/datastore.c
 
-deps_/home/tiger/Development2/driver/datastore.o := \
+deps_/home/tw/Desktop/linux-driver-protection/driver/datastore.o := \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -192,6 +192,11 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/LOCK_STAT) \
   include/linux/rwlock_types.h \
   include/linux/once_lite.h \
+  include/linux/dynamic_debug.h \
+    $(wildcard include/config/JUMP_LABEL) \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
   include/linux/static_call_types.h \
     $(wildcard include/config/HAVE_STATIC_CALL) \
     $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
@@ -207,7 +212,6 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/TREE_SRCU) \
     $(wildcard include/config/BPF_EVENTS) \
     $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
     $(wildcard include/config/EVENT_TRACING) \
     $(wildcard include/config/MODULE_UNLOAD) \
     $(wildcard include/config/CONSTRUCTORS) \
@@ -283,10 +287,27 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/RANDOMIZE_MEMORY) \
   arch/x86/include/uapi/asm/ptrace.h \
   arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
+  arch/x86/include/asm/paravirt_types.h \
+    $(wildcard include/config/PGTABLE_LEVELS) \
+    $(wildcard include/config/PARAVIRT_DEBUG) \
+  arch/x86/include/asm/desc_defs.h \
+  arch/x86/include/asm/pgtable_types.h \
+    $(wildcard include/config/MEM_SOFT_DIRTY) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
+    $(wildcard include/config/PROC_FS) \
+  arch/x86/include/asm/pgtable_64_types.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+  arch/x86/include/asm/sparsemem.h \
+    $(wildcard include/config/SPARSEMEM) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+  arch/x86/include/asm/nospec-branch.h \
+    $(wildcard include/config/DEBUG_ENTRY) \
+    $(wildcard include/config/CPU_IBPB_ENTRY) \
+  include/linux/static_key.h \
+  include/linux/objtool.h \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
   arch/x86/include/asm/percpu.h \
     $(wildcard include/config/X86_64_SMP) \
   include/asm-generic/percpu.h \
@@ -296,6 +317,11 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/BASE_SMALL) \
   include/linux/percpu-defs.h \
     $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/proto.h \
+  arch/x86/include/uapi/asm/ldt.h \
+  arch/x86/include/uapi/asm/sigcontext.h \
+  arch/x86/include/asm/current.h \
   arch/x86/include/asm/page.h \
   arch/x86/include/asm/page_64.h \
     $(wildcard include/config/DEBUG_VIRTUAL) \
@@ -304,18 +330,8 @@ deps_/home/tiger/Development2/driver/datastore.o := \
   include/linux/range.h \
   include/asm-generic/memory_model.h \
     $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
   include/linux/pfn.h \
   include/asm-generic/getorder.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_64_types.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-  arch/x86/include/asm/sparsemem.h \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
   arch/x86/include/asm/msr.h \
   arch/x86/include/asm/msr-index.h \
   arch/x86/include/generated/uapi/asm/errno.h \
@@ -336,9 +352,7 @@ deps_/home/tiger/Development2/driver/datastore.o := \
   arch/x86/include/asm/string.h \
   arch/x86/include/asm/string_64.h \
     $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
+  include/linux/fortify-string.h \
   include/linux/atomic.h \
   arch/x86/include/asm/atomic.h \
   arch/x86/include/asm/cmpxchg.h \
@@ -353,14 +367,15 @@ deps_/home/tiger/Development2/driver/datastore.o := \
   arch/x86/include/asm/bug.h \
     $(wildcard include/config/DEBUG_BUGVERBOSE) \
   include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
   include/asm-generic/bug.h \
     $(wildcard include/config/BUG) \
     $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
   arch/x86/include/uapi/asm/msr.h \
   include/linux/tracepoint-defs.h \
-  include/linux/static_key.h \
-  arch/x86/include/asm/desc_defs.h \
+  arch/x86/include/asm/paravirt.h \
+    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
+  arch/x86/include/asm/frame.h \
+    $(wildcard include/config/FRAME_POINTER) \
   arch/x86/include/asm/special_insns.h \
   include/linux/irqflags.h \
     $(wildcard include/config/TRACE_IRQFLAGS) \
@@ -369,13 +384,6 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/DEBUG_IRQFLAGS) \
     $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
   arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/nospec-branch.h \
-    $(wildcard include/config/CPU_IBPB_ENTRY) \
-  include/linux/objtool.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
   arch/x86/include/asm/fpu/types.h \
   arch/x86/include/asm/vmxfeatures.h \
   arch/x86/include/asm/vdso/processor.h \
@@ -429,7 +437,6 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/HARDENED_USERCOPY) \
   include/linux/restart_block.h \
   arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/FRAME_POINTER) \
     $(wildcard include/config/COMPAT) \
   include/linux/bottom_half.h \
   include/linux/lockdep.h \
@@ -446,8 +453,6 @@ deps_/home/tiger/Development2/driver/datastore.o := \
   include/asm-generic/mmiowb.h \
     $(wildcard include/config/MMIOWB) \
   arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
   arch/x86/include/asm/qspinlock.h \
   include/asm-generic/qspinlock.h \
   arch/x86/include/asm/qrwlock.h \
@@ -662,6 +667,6 @@ deps_/home/tiger/Development2/driver/datastore.o := \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   arch/x86/include/asm/orc_types.h \
 
-/home/tiger/Development2/driver/datastore.o: $(deps_/home/tiger/Development2/driver/datastore.o)
+/home/tw/Desktop/linux-driver-protection/driver/datastore.o: $(deps_/home/tw/Desktop/linux-driver-protection/driver/datastore.o)
 
-$(deps_/home/tiger/Development2/driver/datastore.o):
+$(deps_/home/tw/Desktop/linux-driver-protection/driver/datastore.o):

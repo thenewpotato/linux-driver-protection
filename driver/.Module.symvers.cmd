@@ -1,1 +1,1 @@
-cmd_/home/tiger/Development2/driver/Module.symvers := sed 's/\.ko$$/\.o/' /home/tiger/Development2/driver/modules.order | scripts/mod/modpost    -o /home/tiger/Development2/driver/Module.symvers -e -i Module.symvers   -T -
+cmd_/home/tw/Desktop/linux-driver-protection/driver/Module.symvers := sed 's/\.ko$$/\.o/' /home/tw/Desktop/linux-driver-protection/driver/modules.order | scripts/mod/modpost -m   -o /home/tw/Desktop/linux-driver-protection/driver/Module.symvers -e -i Module.symvers   -T -

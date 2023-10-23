@@ -25,5 +25,13 @@ __section(".gnu.linkonce.this_module") = {
 MODULE_INFO(retpoline, "Y");
 #endif
 
+static const struct modversion_info ____versions[]
+__used __section("__versions") = {
+	{ 0x208e8da, "module_layout" },
+	{ 0x5b8239ca, "__x86_return_thunk" },
+	{ 0x92997ed8, "_printk" },
+	{ 0xbdfb6dbb, "__fentry__" },
+};
+
 MODULE_INFO(depends, "");
 
