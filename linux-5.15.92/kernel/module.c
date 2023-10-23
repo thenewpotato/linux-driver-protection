@@ -4824,7 +4824,7 @@ static pgd_t* __copy_pgd() {
 	int i = 0;
 	while (i < 512) {
 		pgd_t* pgd_entry = pgd_copy + i;
-        if (pgd_flags(*pgd_entry) & __PAGE_PRESENT) {
+        if (pgd_flags(*pgd_entry) & _PAGE_PRESENT) {
             pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
             pud_t* pud_copy = __copy_pud(pud_page);
 			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
@@ -4845,7 +4845,7 @@ static pud_t* __copy_pud(pud_t* src) {
 	int i = 0;
 	while (i < 512) {
 		pud_t* pud_entry = pud_copy + i;
-        if (pud_flags(*pud_entry) & __PAGE_PRESENT) {
+        if (pud_flags(*pud_entry) & _PAGE_PRESENT) {
 			// PMD page pointed to by the PUD entry
             pmd_t* pmd_page = (pmd_t *) pud_page_vaddr(*pud_entry);
 
@@ -4874,7 +4874,7 @@ static pmd_t* __copy_pmd(pmd_t* src) {
 	int i = 0;
 	while (i < 512) {
 		pmd_t* pmd_entry = pmd_copy + i;
-        if (pmd_flags(*pmd_entry) & __PAGE_PRESENT) {
+        if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
 			// PTE page pointed to by the PMD entry
             pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
 
