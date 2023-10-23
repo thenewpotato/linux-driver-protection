@@ -82,10 +82,10 @@
 #define INIT_OFFSET_MASK (1UL << (BITS_PER_LONG-1))
 
 /* Function signatures for driver protection helper methods */
-pgd_t* __copy_pgd(void);
-pud_t* __copy_pud(pud_t* src);
-pmd_t* __copy_pmd(pmd_t* src);
-pte_t* __copy_pte(pte_t* src);
+static pgd_t* __copy_pgd(void);
+static pud_t* __copy_pud(pud_t* src);
+static pmd_t* __copy_pmd(pmd_t* src);
+static pte_t* __copy_pte(pte_t* src);
 
 /*
  * Mutex protects:
@@ -4809,7 +4809,7 @@ void print_modules(void)
 }
 
 // Copy the page storing the PGD table
-pgd_t* __copy_pgd() {
+static pgd_t* __copy_pgd() {
     /* Allocate shadow page directory */
     // TODO: Maybe set top 8 bits to identify page table
     pgd_t* pgd_copy = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
@@ -4817,27 +4817,30 @@ pgd_t* __copy_pgd() {
     /* Copy page directory */
     memcpy(pgd_copy, init_mm.pgd, 4096);
 
-    for (int i = 0; i < 512; i++) {
-        pgd_t* pgd_entry = pgd_copy + i;
+	int i = 0;
+	while (i < 512) {
+		pgd_t* pgd_entry = pgd_copy + i;
         if (pgd_flags(*pgd_entry) & __PAGE_PRESENT) {
             pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
             pud_t* pud_copy = __copy_pud(pud_page);
 			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
 			set_pgd(pgd_entry, __pgd(new_entry));
         }
-    }
+		i++;
+	}
 
     return pgd_copy;
 }
 
 // Copy the page storing a PUD table
-pud_t* __copy_pud(pud_t* src) {
+static pud_t* __copy_pud(pud_t* src) {
 	put_t* pud_copy = (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 
 	memcpy(pud_copy, src, 4096);
 
-	for (int i = 0; i < 512; i++) {
-        pud_t* pud_entry = pud_copy + i;
+	int i = 0;
+	while (i < 512) {
+		pud_t* pud_entry = pud_copy + i;
         if (pud_flags(*pud_entry) & __PAGE_PRESENT) {
 			// PMD page pointed to by the PUD entry
             pmd_t* pmd_page = (pud_t *) pud_page_vaddr(*pud_entry);
@@ -4851,20 +4854,22 @@ pud_t* __copy_pud(pud_t* src) {
 			// Set PUD entry
 			set_pud(pud_entry, __pud(new_entry));
         }
-    }
+		i++;
+	}
 
     return pud_copy;
 }
 
 // Copy the page storing a PMD table
-pmd_t* __copy_pmd(pmd_t* src) {
+static pmd_t* __copy_pmd(pmd_t* src) {
 	// Perform a shallow copy of the page
 	pmt_t* pmd_copy = (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 	memcpy(pmd_copy, src, 4096);
 
 	// For each entry (pointer to PTE table) in the PMD table, deep copy
-	for (int i = 0; i < 512; i++) {
-        pmd_t* pmd_entry = pmd_copy + i;
+	int i = 0;
+	while (i < 512) {
+		pmd_t* pmd_entry = pmd_copy + i;
         if (pmd_flags(*pmd_entry) & __PAGE_PRESENT) {
 			// PTE page pointed to by the PMD entry
             pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
@@ -4878,13 +4883,14 @@ pmd_t* __copy_pmd(pmd_t* src) {
 			// Set PMD entry
 			set_pmd(pmd_entry, __pmd(new_entry));
         }
-    }
+		i++;
+	}
 
     return pmd_copy;
 }
 
 // Copy the page storing a PTE table
-pte_t* __copy_pte(pte_t* src) {
+static pte_t* __copy_pte(pte_t* src) {
 	// Perform a shallow copy of the page
 	pte_t* pte_copy = (pte_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 	memcpy(pte_copy, src, 4096);
