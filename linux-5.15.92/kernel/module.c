@@ -86,6 +86,10 @@ static pgd_t* __copy_pgd(void);
 static pud_t* __copy_pud(pud_t* src);
 static pmd_t* __copy_pmd(pmd_t* src);
 static pte_t* __copy_pte(pte_t* src);
+static inline unsigned long pud_page_vaddr(pud_t pud)
+{
+	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud));
+}
 
 /*
  * Mutex protects:
@@ -4843,7 +4847,7 @@ static pud_t* __copy_pud(pud_t* src) {
 		pud_t* pud_entry = pud_copy + i;
         if (pud_flags(*pud_entry) & __PAGE_PRESENT) {
 			// PMD page pointed to by the PUD entry
-            pmd_t* pmd_page = (pud_t *) pud_page_vaddr(*pud_entry);
+            pmd_t* pmd_page = (pmd_t *) pud_page_vaddr(*pud_entry);
 
 			// Copy the PMD page
             pmd_t* pmd_copy = __copy_pmd(pmd_page);
@@ -4863,7 +4867,7 @@ static pud_t* __copy_pud(pud_t* src) {
 // Copy the page storing a PMD table
 static pmd_t* __copy_pmd(pmd_t* src) {
 	// Perform a shallow copy of the page
-	pmt_t* pmd_copy = (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+	pmd_t* pmd_copy = (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 	memcpy(pmd_copy, src, 4096);
 
 	// For each entry (pointer to PTE table) in the PMD table, deep copy
