@@ -4843,6 +4843,8 @@ static pgd_t* __copy_pgd() {
             pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
             pud_t* pud_copy = __copy_pud(pud_page);
 			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
+			printk(KERN_INFO "old entry %lx\n", *pgd_entry);
+			printk(KERN_INFO "new entry %lx\n", new_entry);
 			set_pgd(pgd_entry, __pgd(new_entry));
         }
 		i++;
