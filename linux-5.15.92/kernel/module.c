@@ -4842,7 +4842,7 @@ static pgd_t* __copy_pgd() {
         if (pgd_flags(*pgd_entry) & _PAGE_PRESENT) {
             pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
             pud_t* pud_copy = __copy_pud(pud_page);
-			pgdval_t new_entry = (pgdval_t) pud_copy | pgd_flags(*pgd_entry);
+			pgdval_t new_entry = (pgdval_t) __pa(pud_copy) | pgd_flags(*pgd_entry);
 			printk(KERN_INFO "old page address %px\n", pud_page);
 			printk(KERN_INFO "new page address %px\n", pud_copy);
 			printk(KERN_INFO "entry address %px\n", pgd_entry);
