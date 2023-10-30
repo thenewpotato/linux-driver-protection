@@ -2,8 +2,8 @@
 
 /bin/busybox --install -s
 
-alias insmod=/bin/busybox insmod
-alias rmmod=/bin/busybox rmmod
-alias lsmod=/bin/busybox lsmod
+alias insmod='/bin/busybox insmod'
+alias rmmod='/bin/busybox rmmod'
+alias lsmod='/bin/busybox lsmod'
 
 /bin/busybox sh
