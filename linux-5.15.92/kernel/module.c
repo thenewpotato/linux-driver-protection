@@ -4843,13 +4843,13 @@ static pgd_t* __copy_pgd() {
             pud_t* pud_page = (pud_t *) pgd_page_vaddr(*pgd_entry);
             pud_t* pud_copy = __copy_pud(pud_page);
 			pgdval_t new_entry = (pgdval_t) __pa(pud_copy) | pgd_flags(*pgd_entry);
-			printk(KERN_INFO "old page address %px\n", pud_page);
-			printk(KERN_INFO "new page address %px\n", pud_copy);
-			printk(KERN_INFO "entry address %px\n", pgd_entry);
-			printk(KERN_INFO "old entry %lx\n", *pgd_entry);
-			printk(KERN_INFO "new entry %lx\n", new_entry);
+			// printk(KERN_INFO "old page address %px\n", pud_page);
+			// printk(KERN_INFO "new page address %px\n", pud_copy);
+			// printk(KERN_INFO "entry address %px\n", pgd_entry);
+			// printk(KERN_INFO "old entry %lx\n", *pgd_entry);
+			// printk(KERN_INFO "new entry %lx\n", new_entry);
 			set_pgd(pgd_entry, __pgd(new_entry));
-			printk(KERN_INFO "new entry actual %lx\n", *pgd_entry);
+			// printk(KERN_INFO "new entry actual %lx\n", *pgd_entry);
         }
 		i++;
 	}
@@ -4863,27 +4863,26 @@ static pud_t* __copy_pud(pud_t* src) {
 
 	memcpy(pud_copy, src, 4096);
 
-	/* Testing: What if we don't perform deep copy */
-	// int i = 0;
-	// while (i < 512) {
-	// 	pud_t* pud_entry = pud_copy + i;
-	// 	if (pud_large(*pud_entry)) {
-	// 		// skip huge pages
-	// 	} else if (pud_flags(*pud_entry) & _PAGE_PRESENT) {
-	// 		// PMD page pointed to by the PUD entry
-    //         pmd_t* pmd_page = (pmd_t *) pud_page_vaddr(*pud_entry);
+	int i = 0;
+	while (i < 512) {
+		pud_t* pud_entry = pud_copy + i;
+		if (pud_large(*pud_entry)) {
+			// skip huge pages
+		} else if (pud_flags(*pud_entry) & _PAGE_PRESENT) {
+			// PMD page pointed to by the PUD entry
+            pmd_t* pmd_page = (pmd_t *) pud_page_vaddr(*pud_entry);
 
-	// 		// Copy the PMD page
-    //         pmd_t* pmd_copy = __copy_pmd(pmd_page);
+			// Copy the PMD page
+            pmd_t* pmd_copy = __copy_pmd(pmd_page);
 
-	// 		// Construct new PUD entry using shadow PMD page address and original flags
-	// 		pudval_t new_entry = (pudval_t) pmd_copy | pud_flags(*pud_entry);
+			// Construct new PUD entry using shadow PMD page address and original flags
+			pudval_t new_entry = (pudval_t) __pa(pmd_copy) | pud_flags(*pud_entry);
 
-	// 		// Set PUD entry
-	// 		set_pud(pud_entry, __pud(new_entry));
-    //     }
-	// 	i++;
-	// }
+			// Set PUD entry
+			set_pud(pud_entry, __pud(new_entry));
+        }
+		i++;
+	}
 
     return pud_copy;
 }
@@ -4895,26 +4894,26 @@ static pmd_t* __copy_pmd(pmd_t* src) {
 	memcpy(pmd_copy, src, 4096);
 
 	// For each entry (pointer to PTE table) in the PMD table, deep copy
-	int i = 0;
-	while (i < 512) {
-		pmd_t* pmd_entry = pmd_copy + i;
-		if (pmd_large(*pmd_entry)) {
-			// skip huge pages
-		} else if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
-			// PTE page pointed to by the PMD entry
-            pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
+	// int i = 0;
+	// while (i < 512) {
+	// 	pmd_t* pmd_entry = pmd_copy + i;
+	// 	if (pmd_large(*pmd_entry)) {
+	// 		// skip huge pages
+	// 	} else if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
+	// 		// PTE page pointed to by the PMD entry
+    //         pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
 
-			// Copy the PTE page
-            pte_t* pte_copy = __copy_pte(pte_page);
+	// 		// Copy the PTE page
+    //         pte_t* pte_copy = __copy_pte(pte_page);
 
-			// Construct new PMD entry using shadow PTE page address and original flags
-			pmdval_t new_entry = (pmdval_t) pte_copy | pmd_flags(*pmd_entry);
+	// 		// Construct new PMD entry using shadow PTE page address and original flags
+	// 		pmdval_t new_entry = (pmdval_t) pte_copy | pmd_flags(*pmd_entry);
 
-			// Set PMD entry
-			set_pmd(pmd_entry, __pmd(new_entry));
-        }
-		i++;
-	}
+	// 		// Set PMD entry
+	// 		set_pmd(pmd_entry, __pmd(new_entry));
+    //     }
+	// 	i++;
+	// }
 
     return pmd_copy;
 }
