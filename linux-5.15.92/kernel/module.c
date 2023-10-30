@@ -4894,26 +4894,26 @@ static pmd_t* __copy_pmd(pmd_t* src) {
 	memcpy(pmd_copy, src, 4096);
 
 	// For each entry (pointer to PTE table) in the PMD table, deep copy
-	// int i = 0;
-	// while (i < 512) {
-	// 	pmd_t* pmd_entry = pmd_copy + i;
-	// 	if (pmd_large(*pmd_entry)) {
-	// 		// skip huge pages
-	// 	} else if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
-	// 		// PTE page pointed to by the PMD entry
-    //         pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
+	int i = 0;
+	while (i < 512) {
+		pmd_t* pmd_entry = pmd_copy + i;
+		if (pmd_large(*pmd_entry)) {
+			// skip huge pages
+		} else if (pmd_flags(*pmd_entry) & _PAGE_PRESENT) {
+			// PTE page pointed to by the PMD entry
+            pte_t* pte_page = (pte_t *) pmd_page_vaddr(*pmd_entry);
 
-	// 		// Copy the PTE page
-    //         pte_t* pte_copy = __copy_pte(pte_page);
+			// Copy the PTE page
+            pte_t* pte_copy = __copy_pte(pte_page);
 
-	// 		// Construct new PMD entry using shadow PTE page address and original flags
-	// 		pmdval_t new_entry = (pmdval_t) pte_copy | pmd_flags(*pmd_entry);
+			// Construct new PMD entry using shadow PTE page address and original flags
+			pmdval_t new_entry = (pmdval_t) __pa(pte_copy) | pmd_flags(*pmd_entry);
 
-	// 		// Set PMD entry
-	// 		set_pmd(pmd_entry, __pmd(new_entry));
-    //     }
-	// 	i++;
-	// }
+			// Set PMD entry
+			set_pmd(pmd_entry, __pmd(new_entry));
+        }
+		i++;
+	}
 
     return pmd_copy;
 }
