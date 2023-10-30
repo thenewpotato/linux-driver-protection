@@ -19,7 +19,7 @@ void datastore_add(unsigned long n) {
   DATA += n;
 }
 
-unsigned long datastore_get() {
+unsigned long datastore_get(void) {
   return DATA;
 }
 
