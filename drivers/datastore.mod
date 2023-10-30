@@ -1,2 +1,2 @@
-/home/tw/Desktop/linux-driver-protection/driver/datastore.o
+/home/tw/Desktop/linux-driver-protection/drivers/datastore.o
 

@@ -1,0 +1,1 @@
+cmd_/home/tw/Desktop/linux-driver-protection/drivers/reader.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T scripts/module.lds -o /home/tw/Desktop/linux-driver-protection/drivers/reader.ko /home/tw/Desktop/linux-driver-protection/drivers/reader.o /home/tw/Desktop/linux-driver-protection/drivers/reader.mod.o;  true

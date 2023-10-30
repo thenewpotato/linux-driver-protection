@@ -1,1 +1,1 @@
-cmd_/home/tw/Desktop/linux-driver-protection/driver/modules.order := {   echo /home/tw/Desktop/linux-driver-protection/driver/datastore.ko; :; } | awk '!x[$$0]++' - > /home/tw/Desktop/linux-driver-protection/driver/modules.order
+cmd_/home/tw/Desktop/linux-driver-protection/drivers/modules.order := {   echo /home/tw/Desktop/linux-driver-protection/drivers/datastore.ko;   echo /home/tw/Desktop/linux-driver-protection/drivers/reader.ko; :; } | awk '!x[$$0]++' - > /home/tw/Desktop/linux-driver-protection/drivers/modules.order

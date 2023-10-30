@@ -1,0 +1,1 @@
+cmd_/home/tw/Desktop/linux-driver-protection/drivers/reader.mod := { echo  /home/tw/Desktop/linux-driver-protection/drivers/reader.o;  echo; } > /home/tw/Desktop/linux-driver-protection/drivers/reader.mod

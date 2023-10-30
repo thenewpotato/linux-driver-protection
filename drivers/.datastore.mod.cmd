@@ -1,1 +1,1 @@
-cmd_/home/tw/Desktop/linux-driver-protection/driver/datastore.mod := { echo  /home/tw/Desktop/linux-driver-protection/driver/datastore.o;  echo; } > /home/tw/Desktop/linux-driver-protection/driver/datastore.mod
+cmd_/home/tw/Desktop/linux-driver-protection/drivers/datastore.mod := { echo  /home/tw/Desktop/linux-driver-protection/drivers/datastore.o;  echo; } > /home/tw/Desktop/linux-driver-protection/drivers/datastore.mod
