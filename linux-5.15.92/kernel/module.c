@@ -4141,27 +4141,24 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	/* Done! */
 	trace_module_load(mod);
 
-    /* Make shadow page directory */
-    mod->pgd_shadow = __copy_pgd();
+	if (strcmp("datastore", mod->name) == 0) {
+		/* Make shadow page directory */
+		mod->pgd_shadow = __copy_pgd();
 
-	printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
+		printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
 
-	/* Testing write_cr3 */
-	// void* cur_cr3 = __va(read_cr3_pa());
-	// unsigned long cr3 = __sme_pa(cur_cr3);
-    // write_cr3(cr3);
+		/* Switch to new page table */
+		unsigned long cr3 = __sme_pa(mod->pgd_shadow);
+		write_cr3(cr3);
 
-    /* Switch to new page table */
-    unsigned long cr3 = __sme_pa(mod->pgd_shadow);
-    write_cr3(cr3);
-
-	int sum = 0;
-	int i = 0;
-	while (i < 100) {
-		sum += i;
-		i++;
+		int sum = 0;
+		int i = 0;
+		while (i < 100) {
+			sum += i;
+			i++;
+		}
+		printk(KERN_INFO "Sum is %d\n", sum);
 	}
-	printk(KERN_INFO "Sum is %d\n", sum);
 
 	return do_init_module(mod);
 
