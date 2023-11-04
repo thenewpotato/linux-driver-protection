@@ -83,13 +83,16 @@
 
 /* Function signatures for driver protection helper methods */
 static pgd_t* __copy_pgd(void);
-static pud_t* __copy_pud(pud_t* src);
-static pmd_t* __copy_pmd(pmd_t* src);
-static pte_t* __copy_pte(pte_t* src);
+static pud_t* __copy_pud(pud_t*);
+static pmd_t* __copy_pmd(pmd_t*);
+static pte_t* __copy_pte(pte_t*);
 static inline unsigned long pud_page_vaddr(pud_t pud)
 {
 	return (unsigned long)__va(pud_val(pud) & pud_pfn_mask(pud));
 }
+static pte_t* __get_pte(void*);
+static void __erase_pte_present(pte_t*);
+static void __hide_module_memory(struct module_layout);
 
 /*
  * Mutex protects:
@@ -4144,13 +4147,16 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	if (strcmp("datastore", mod->name) == 0) {
 		/* Make shadow page directory */
 		mod->pgd_shadow = __copy_pgd();
-
 		printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
 
-		/* Switch to new page table */
-		unsigned long cr3 = __sme_pa(mod->pgd_shadow);
-		write_cr3(cr3);
+		/* Hide module pages in kernel page table */
+		__hide_module_memory(mod->core_layout);
 
+		/* Switch to new page table */
+		// unsigned long cr3 = __sme_pa(mod->pgd_shadow);
+		// write_cr3(cr3);
+
+		/* Sanity check */
 		int sum = 0;
 		int i = 0;
 		while (i < 100) {
@@ -4924,6 +4930,62 @@ static pte_t* __copy_pte(pte_t* src) {
 	// No need to perform deep copy; PTE entries point to real pages, not page table structures
 
     return pte_copy;
+}
+
+static void __hide_module_memory(struct module_layout layout) {
+	void* current_page;
+	void* end;
+
+	end = layout.base + layout.size;
+	current_page = layout.base;
+	if (!IS_ALIGNED((unsigned long) current_page, 4096)) {
+		printk(KERN_CRIT "__hide_module_memory: Base address not page aligned %px\n", current_page);
+		BUG();
+	}
+	if (layout.size % 4096 != 0) {
+		printk(KERN_CRIT "__hide_module_memory: Size not divisible by PAGESIZE %lu\n", layout.size);
+		BUG();
+	}
+
+	while (current_page < end) {
+		__erase_pte_present(__get_pte(current_page));
+		current_page += 4096;
+	}
+}
+
+// Get PTE entry corresponding to page that vaddr is on
+static pte_t* __get_pte(void* vaddr) {
+	unsigned long pa;
+	unsigned long pgd_i;
+	unsigned long pud_i;
+	unsigned long pmd_i;
+	unsigned long pte_i;
+	pgd_t* pgd;
+	pud_t* pud;
+	pmd_t* pmd;
+	pte_t* pte;
+
+	pa = __pa(vaddr);
+	pgd_i = pgd_index(pa);
+	pud_i = pud_index(pa);
+	pmd_i = pmd_index(pa);
+	pte_i = pte_index(pa);
+
+	pgd = __va(read_cr3_pa()) + pgd_i;
+	pud = ((pud_t*) pgd_page_vaddr(*pgd)) + pud_i;
+	pmd = ((pmd_t*) pud_page_vaddr(*pud)) + pmd_i;
+	pte = ((pte_t*) pmd_page_vaddr(*pmd)) + pte_i;
+
+	return pte;
+}
+
+static void __erase_pte_present(pte_t* pte) {
+	pteval_t old_entry;
+	pteval_t new_entry;
+
+	old_entry = pte_val(*pte);
+	new_entry = old_entry & ~(1 << _PAGE_PRESENT);
+	set_pte(pte, __pte(new_entry));
 }
 
 #ifdef CONFIG_MODVERSIONS
