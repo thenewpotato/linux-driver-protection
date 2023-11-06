@@ -4966,11 +4966,11 @@ static pte_t* __get_pte(void* vaddr) {
 	pmd_t* pmd;
 	pte_t* pte;
 
-	pa = __pa(vaddr);
-	pgd_i = pgd_index(pa);
-	pud_i = pud_index(pa);
-	pmd_i = pmd_index(pa);
-	pte_i = pte_index(pa);
+	// pa = __pa(vaddr);
+	pgd_i = pgd_index(vaddr);
+	pud_i = pud_index(vaddr);
+	pmd_i = pmd_index(vaddr);
+	pte_i = pte_index(vaddr);
 
 	pgd = __va(read_cr3_pa()) + pgd_i;
 	pud = ((pud_t*) pgd_page_vaddr(*pgd)) + pud_i;
