@@ -4972,7 +4972,7 @@ static pte_t* __get_pte(void* vaddr) {
 	pmd_i = pmd_index((unsigned long) vaddr);
 	pte_i = pte_index((unsigned long) vaddr);
 
-	pgd = __va(read_cr3_pa()) + pgd_i;
+	pgd = ((pgd_t*) __va(read_cr3_pa())) + pgd_i;
 	pud = ((pud_t*) pgd_page_vaddr(*pgd)) + pud_i;
 	pmd = ((pmd_t*) pud_page_vaddr(*pud)) + pmd_i;
 	pte = ((pte_t*) pmd_page_vaddr(*pmd)) + pte_i;
