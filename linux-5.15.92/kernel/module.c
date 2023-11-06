@@ -4164,7 +4164,6 @@ static int load_module(struct load_info *info, const char __user *uargs,
 			i++;
 		}
 		printk(KERN_INFO "Sum is %d\n", sum);
-		return 0;
 	}
 
 	return do_init_module(mod);
