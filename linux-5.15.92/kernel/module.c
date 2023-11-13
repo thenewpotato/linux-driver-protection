@@ -4144,7 +4144,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	/* Done! */
 	trace_module_load(mod);
 
-	if (strcmp("datastore", mod->name) == 0) {
+	if (strcmp("datastore", mod->name) == 0 || strcmp("scull", mod->name) == 0) {
 		/* Make shadow page directory */
 		mod->pgd_shadow = __copy_pgd();
 		printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
