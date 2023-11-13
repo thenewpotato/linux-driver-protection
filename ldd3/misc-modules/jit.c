@@ -93,7 +93,7 @@ int jit_fn_show(struct seq_file *m, void *v)
 
 static int jit_fn_open(struct inode *inode, struct file *file)
 {
-	return single_open(file, jit_fn_show, pde_data(inode));
+	return single_open(file, jit_fn_show, PDE_DATA(inode));
 }
 
 static const struct file_operations jit_fn_fops = {
@@ -303,7 +303,7 @@ int jit_tasklet_show(struct seq_file *m, void *v)
 
 static int jit_tasklet_open(struct inode *inode, struct file *file)
 {
-	return single_open(file, jit_tasklet_show, pde_data(inode));
+	return single_open(file, jit_tasklet_show, PDE_DATA(inode));
 }
 
 static const struct file_operations jit_tasklet_fops = {
@@ -315,8 +315,8 @@ static const struct file_operations jit_tasklet_fops = {
 
 int __init jit_init(void)
 {
-	proc_create("currentime", 0, NULL,
-	    proc_ops_wrapper(&jit_currentime_fops, jit_currentime_pops));
+	proc_create_data("currentime", 0, NULL,
+	    proc_ops_wrapper(&jit_currentime_fops, jit_currentime_pops), NULL);
 	proc_create_data("jitbusy", 0, NULL,
 	    proc_ops_wrapper(&jit_fn_fops, jit_fn_pops), (void *)JIT_BUSY);
 	proc_create_data("jitsched", 0, NULL,
@@ -326,10 +326,10 @@ int __init jit_init(void)
 	proc_create_data("jitschedto", 0, NULL,
 	    proc_ops_wrapper(&jit_fn_fops, jit_fn_pops), (void *)JIT_SCHEDTO);
 
-	proc_create("jitimer", 0, NULL,
-	    proc_ops_wrapper(&jit_timer_fops, jit_timer_pops));
-	proc_create("jitasklet", 0, NULL,
-	    proc_ops_wrapper(&jit_tasklet_fops, jit_tasklet_pops));
+	proc_create_data("jitimer", 0, NULL,
+	    proc_ops_wrapper(&jit_timer_fops, jit_timer_pops), NULL);
+	proc_create_data("jitasklet", 0, NULL,
+	    proc_ops_wrapper(&jit_tasklet_fops, jit_tasklet_pops), NULL);
 	proc_create_data("jitasklethi", 0, NULL,
 	    proc_ops_wrapper(&jit_tasklet_fops, jit_tasklet_pops), (void *)1);
 
