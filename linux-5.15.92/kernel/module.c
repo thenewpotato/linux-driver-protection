@@ -4149,12 +4149,20 @@ static int load_module(struct load_info *info, const char __user *uargs,
 		mod->pgd_shadow = __copy_pgd();
 		printk(KERN_INFO "Shadow page table at %px\n", __pa(mod->pgd_shadow));
 
+		unsigned long old_cr3 = read_cr3_pa();
+
 		/* Hide module pages in kernel page table */
 		__hide_module_memory(mod->core_layout);
 
 		/* Switch to new page table */
-		// unsigned long cr3 = __sme_pa(mod->pgd_shadow);
-		// write_cr3(cr3);
+		unsigned long new_cr3 = __sme_pa(mod->pgd_shadow);
+		write_cr3(new_cr3);
+
+		/* Do module initialization */
+		int init_ret = do_init_module(mod);
+
+		/* Switch back to kernel page table */
+		write_cr3(old_cr3);
 
 		/* Sanity check */
 		int sum = 0;
@@ -4164,6 +4172,8 @@ static int load_module(struct load_info *info, const char __user *uargs,
 			i++;
 		}
 		printk(KERN_INFO "Sum is %d\n", sum);
+
+		return init_ret;
 	}
 
 	return do_init_module(mod);
