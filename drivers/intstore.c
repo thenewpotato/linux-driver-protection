@@ -99,9 +99,11 @@ int intstore_init(void) {
         if (IS_ERR(device)) {
             printk(KERN_INFO "device_create errored %d\n", PTR_ERR(device));
         }
+
+        printk(KERN_INFO "device initialized with major %d and minor %d\n", dev_major, i);
     }
 
-    printk(KERN_INFO "Intstore initialized!\n");
+    printk(KERN_INFO "intstore initialized!\n");
     return 0;
 }
 
@@ -117,7 +119,7 @@ void intstore_exit(void) {
 
     unregister_chrdev_region(MKDEV(dev_major, 0), MINORMASK);
 
-    printk(KERN_INFO "Intstore destroyed.\n");
+    printk(KERN_INFO "intstore destroyed.\n");
 }
 
 module_init(intstore_init);
