@@ -85,8 +85,7 @@ int intstore_init(void) {
     // Create necessary number of the devices
     for (i = 0; i < MAX_DEV; i++) {
         // init new device
-        ret = cdev_init(&intstore_data[i].cdev, &intstore_fops);
-        printk(KERN_INFO "cdev_init returns %d\n", ret);
+        cdev_init(&intstore_data[i].cdev, &intstore_fops);
         intstore_data[i].cdev.owner = THIS_MODULE;
         intstore_data[i].data = 558;
 
