@@ -50,7 +50,7 @@ static const struct file_operations intstore_fops = {
 // device data holder, this structure may be extended to hold additional data
 struct intstore_device_data {
     struct cdev cdev;
-    unsigned long data = 0;
+    unsigned long data;
 };
 
 // global storage for device Major number
@@ -86,6 +86,7 @@ int intstore_init(void) {
         // init new device
         cdev_init(&intstore_data[i].cdev, &intstore_fops);
         intstore_data[i].cdev.owner = THIS_MODULE;
+        intstore_data[i].data = 558;
 
         // add device to the system where "i" is a Minor number of the new device
         cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1);
