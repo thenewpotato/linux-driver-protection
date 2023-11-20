@@ -7,6 +7,36 @@
 // max Minor devices
 #define MAX_DEV 1
 
+static int intstore_open(struct inode *inode, struct file *file)
+{
+    printk("INTSTORE: Device open\n");
+    return 0;
+}
+
+static int intstore_release(struct inode *inode, struct file *file)
+{
+    printk("INTSTORE: Device close\n");
+    return 0;
+}
+
+static long intstore_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+    printk("INTSTORE: Device ioctl\n");
+    return 0;
+}
+
+static ssize_t intstore_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
+{
+    printk("INTSTORE: Device read\n");
+    return 0;
+}
+
+static ssize_t intstore_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
+{
+    printk("INTSTORE: Device write\n");
+    return 0;
+}
+
 // initialize file_operations
 static const struct file_operations intstore_fops = {
     .owner      = THIS_MODULE,
@@ -32,6 +62,12 @@ static struct class *intstore_class = NULL;
 // array of mychar_device_data for
 static struct intstore_device_data intstore_data[MAX_DEV];
 
+/* Callback to configure character device permissions */
+static int intstore_uevent(struct device *dev, struct kobj_uevent_env *env) {
+    add_uevent_var(env, "DEVMODE=%#o", 0666);
+    return 0;
+}
+
 int intstore_init(void) {
     int err, i;
     dev_t dev;
@@ -43,6 +79,7 @@ int intstore_init(void) {
 
     // create sysfs class
     intstore_class = class_create(THIS_MODULE, "intstore");
+    intstore_class->dev_uevent = intstore_uevent;
 
     // Create necessary number of the devices
     for (i = 0; i < MAX_DEV; i++) {
@@ -53,17 +90,27 @@ int intstore_init(void) {
         // add device to the system where "i" is a Minor number of the new device
         cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1);
 
-        // create device node /dev/mychardev-x where "x" is "i", equal to the Minor number
+        // create device node /dev/intstore-x where "x" is "i", equal to the Minor number
         device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
     }
-
 
     printk(KERN_INFO "Intstore initialized!\n");
     return 0;
 }
 
 void intstore_exit(void) {
-    printk(KERN_INFO "Shutting down intstore.\n");
+    int i;
+
+    for (i = 0; i < MAX_DEV; i++) {
+        device_destroy(intstore_class, MKDEV(dev_major, i));
+    }
+
+    class_unregister(intstore_class);
+    class_destroy(intstore_class);
+
+    unregister_chrdev_region(MKDEV(dev_major, 0), MINORMASK);
+
+    printk(KERN_INFO "Intstore destroyed.\n");
 }
 
 module_init(intstore_init);
