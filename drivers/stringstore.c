@@ -48,9 +48,17 @@ static ssize_t stringstore_read(struct file *file, char __user *buf, size_t coun
         count = STRING_LEN;
     }
 
+    /* Switch to new page table */
+    unsigned long old_cr3 = read_cr3_pa();
+    unsigned long new_cr3 = __sme_pa(THIS_MODULE->pgd_shadow);
+    write_cr3(new_cr3);
+
     if (copy_to_user(buf, stringstore_data[0].string, count)) {
         return -EFAULT;
     }
+
+    /* Switch back to kernel page table */
+    write_cr3(old_cr3);
 
     return count;
 }
