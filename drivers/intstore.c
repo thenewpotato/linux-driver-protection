@@ -94,8 +94,7 @@ int intstore_init(void) {
         printk(KERN_INFO "cdev_add returns %d\n", ret);
 
         // create device node /dev/intstore-x where "x" is "i", equal to the Minor number
-        ret = device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
-        printk(KERN_INFO "device_create returns %d\n", ret);
+        device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
     }
 
     printk(KERN_INFO "Intstore initialized!\n");
