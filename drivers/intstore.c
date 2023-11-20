@@ -57,8 +57,17 @@ static ssize_t intstore_read(struct file *file, char __user *buf, size_t count, 
 
 static ssize_t intstore_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
 {
-    printk("INTSTORE: Device write\n");
-    return 0;
+    if (count > STRING_LEN - 1) {
+        count = STRING_LEN - 1;
+    }
+
+    if (copy_from_user(intstore_data[0].string, buf, count)) {
+        return -EFAULT;
+    }
+
+    intstore_data[0].string[count] = '\0';
+
+    return count;
 }
 
 // initialize file_operations
