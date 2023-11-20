@@ -7,6 +7,8 @@
 // max Minor devices
 #define MAX_DEV 1
 
+#define STRING_LEN 10
+
 static int intstore_open(struct inode *inode, struct file *file)
 {
     printk("INTSTORE: Device open\n");
@@ -27,8 +29,15 @@ static long intstore_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 
 static ssize_t intstore_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
 {
-    printk("INTSTORE: Device read\n");
-    return 0;
+    if (count > STRING_LEN) {
+        count = STRING_LEN;
+    }
+
+    if (copy_to_user(buf, intstore_data[0].string, count)) {
+        return -EFAULT;
+    }
+
+    return count;
 }
 
 static ssize_t intstore_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
@@ -50,7 +59,7 @@ static const struct file_operations intstore_fops = {
 // device data holder, this structure may be extended to hold additional data
 struct intstore_device_data {
     struct cdev cdev;
-    unsigned long data;
+    int string[STRING_LEN];
 };
 
 // global storage for device Major number
@@ -88,7 +97,9 @@ int intstore_init(void) {
         // init new device
         cdev_init(&intstore_data[i].cdev, &intstore_fops);
         intstore_data[i].cdev.owner = THIS_MODULE;
-        intstore_data[i].data = 558;
+        intstore_data[i].string[0] = 'H';
+        intstore_data[i].string[1] = 'i';
+        intstore_data[i].string[2] = '\0';
 
         // add device to the system where "i" is a Minor number of the new device
         ret = cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1);
