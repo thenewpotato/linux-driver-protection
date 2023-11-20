@@ -74,6 +74,7 @@ int intstore_init(void) {
 
     // allocate chardev region and assign Major number
     err = alloc_chrdev_region(&dev, 0, 1, "intstore");
+    printk(KERN_INFO "alloc_chrdev_region returns %d\n", err);
 
     dev_major = MAJOR(dev);
 
@@ -84,17 +85,18 @@ int intstore_init(void) {
     // Create necessary number of the devices
     for (i = 0; i < MAX_DEV; i++) {
         // init new device
-        cdev_init(&intstore_data[i].cdev, &intstore_fops);
+        ret = cdev_init(&intstore_data[i].cdev, &intstore_fops);
+        printk(KERN_INFO "cdev_init returns %d\n", ret);
         intstore_data[i].cdev.owner = THIS_MODULE;
         intstore_data[i].data = 558;
 
         // add device to the system where "i" is a Minor number of the new device
-        if ((ret = cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1)) < 0) {
-            pr_err("Couldn't add device to system: %d", ret);
-        }
+        ret = cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1);
+        printk(KERN_INFO "cdev_add returns %d\n", ret);
 
         // create device node /dev/intstore-x where "x" is "i", equal to the Minor number
-        device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
+        ret = device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
+        printk(KERN_INFO "device_create returns %d\n", ret);
     }
 
     printk(KERN_INFO "Intstore initialized!\n");
