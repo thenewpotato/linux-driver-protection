@@ -9,6 +9,21 @@
 
 #define STRING_LEN 10
 
+// device data holder, this structure may be extended to hold additional data
+struct intstore_device_data {
+    struct cdev cdev;
+    int string[STRING_LEN];
+};
+
+// global storage for device Major number
+static int dev_major = 0;
+
+// sysfs class structure
+static struct class *intstore_class = NULL;
+
+// array of mychar_device_data for
+static struct intstore_device_data intstore_data[MAX_DEV];
+
 static int intstore_open(struct inode *inode, struct file *file)
 {
     printk("INTSTORE: Device open\n");
@@ -55,21 +70,6 @@ static const struct file_operations intstore_fops = {
     .read       = intstore_read,
     .write       = intstore_write
 };
-
-// device data holder, this structure may be extended to hold additional data
-struct intstore_device_data {
-    struct cdev cdev;
-    int string[STRING_LEN];
-};
-
-// global storage for device Major number
-static int dev_major = 0;
-
-// sysfs class structure
-static struct class *intstore_class = NULL;
-
-// array of mychar_device_data for
-static struct intstore_device_data intstore_data[MAX_DEV];
 
 /* Callback to configure character device permissions */
 static int intstore_uevent(struct device *dev, struct kobj_uevent_env *env) {
