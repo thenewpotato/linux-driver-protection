@@ -69,7 +69,7 @@ static int intstore_uevent(struct device *dev, struct kobj_uevent_env *env) {
 }
 
 int intstore_init(void) {
-    int err, i;
+    int err, i, ret;
     dev_t dev;
 
     // allocate chardev region and assign Major number
@@ -89,7 +89,9 @@ int intstore_init(void) {
         intstore_data[i].data = 558;
 
         // add device to the system where "i" is a Minor number of the new device
-        cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1);
+        if ((ret = cdev_add(&intstore_data[i].cdev, MKDEV(dev_major, i), 1)) < 0) {
+            pr_err("Couldn't add device to system: %d", ret);
+        }
 
         // create device node /dev/intstore-x where "x" is "i", equal to the Minor number
         device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
