@@ -71,6 +71,7 @@ static int intstore_uevent(struct device *dev, struct kobj_uevent_env *env) {
 int intstore_init(void) {
     int err, i, ret;
     dev_t dev;
+    struct device* device;
 
     // allocate chardev region and assign Major number
     err = alloc_chrdev_region(&dev, 0, 1, "intstore");
@@ -94,7 +95,10 @@ int intstore_init(void) {
         printk(KERN_INFO "cdev_add returns %d\n", ret);
 
         // create device node /dev/intstore-x where "x" is "i", equal to the Minor number
-        device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
+        device = device_create(intstore_class, NULL, MKDEV(dev_major, i), NULL, "intstore-%d", i);
+        if (IS_ERR(device)) {
+            printk(KERN_INFO "device_create errored %d\n", PTR_ERR(device));
+        }
     }
 
     printk(KERN_INFO "Intstore initialized!\n");
