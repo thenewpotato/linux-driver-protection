@@ -367,6 +367,12 @@ void cdev_put(struct cdev *p)
 	}
 }
 
+ssize_t gluecode_read(ssize_t (*stromgs) (), struct cdev *p)
+{
+	// Switch pagetable
+
+}
+
 /*
  * Called every time a character special file is opened
  */
@@ -406,6 +412,7 @@ static int chrdev_open(struct inode *inode, struct file *filp)
 
 	ret = -ENXIO;
 	fops = fops_get(p->ops);
+	fops->read = gluecode_read;
 	if (!fops)
 		goto out_cdev_put;
 
