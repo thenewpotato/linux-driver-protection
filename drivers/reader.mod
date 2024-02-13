@@ -1,2 +1,2 @@
-/home/tw/Desktop/linux-driver-protection/drivers/reader.o
+/home/tw/Documents/passetto/drivers/reader.o
 

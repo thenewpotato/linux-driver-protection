@@ -254,6 +254,8 @@ static int __init vfio_pci_init(void)
 
 	vfio_pci_fill_ids();
 
+	printk(KERN_INFO "Passetto: vfio_pci init.\n");
+
 	if (disable_denylist)
 		pr_warn("device denylist disabled.\n");
 

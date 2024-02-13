@@ -1,1 +1,1 @@
-cmd_/home/tw/Desktop/linux-driver-protection/drivers/Module.symvers := sed 's/\.ko$$/\.o/' /home/tw/Desktop/linux-driver-protection/drivers/modules.order | scripts/mod/modpost -m   -o /home/tw/Desktop/linux-driver-protection/drivers/Module.symvers -e -i Module.symvers   -T -
+cmd_/home/tw/Documents/passetto/drivers/Module.symvers := sed 's/\.ko$$/\.o/' /home/tw/Documents/passetto/drivers/modules.order | scripts/mod/modpost -m   -o /home/tw/Documents/passetto/drivers/Module.symvers -e -i Module.symvers   -T -

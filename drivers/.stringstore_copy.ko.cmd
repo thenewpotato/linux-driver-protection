@@ -1,0 +1,1 @@
+cmd_/home/tw/Documents/passetto/drivers/stringstore_copy.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/tw/Documents/passetto/drivers/stringstore_copy.ko /home/tw/Documents/passetto/drivers/stringstore_copy.o /home/tw/Documents/passetto/drivers/stringstore_copy.mod.o;  true
