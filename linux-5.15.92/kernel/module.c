@@ -4144,7 +4144,9 @@ static int load_module(struct load_info *info, const char __user *uargs,
 	/* Done! */
 	trace_module_load(mod);
 
-	if (strcmp("stringstore", mod->name) == 0) {
+	printk(KERN_INFO "[tw] Module name is: %s\n", mod->name);
+
+	if (strcmp("vfio_iommu_type1", mod->name) == 0 || strcmp("vfio-pci", mod->name) == 0) {
 		/* Print debug info */
 		printk(KERN_INFO "Module layout base: %px, size: %lu\n", mod->core_layout.base, mod->core_layout.size);
 
